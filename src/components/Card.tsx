@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   card: {
     justifyContent: 'center',
     alignContent: 'center',
-    aspectRatio: '2/1',
+    aspectRatio: '2/1.3',
     width: '90%',
     maxWidth: 400,
     maxHeight: 200,
@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     overflow: 'hidden',
+    backgroundColor: 'white',
   },
   cardWord: {
-    fontSize: 24,
+    fontSize: 42,
     textAlign: 'center',
   },
   dim: {
