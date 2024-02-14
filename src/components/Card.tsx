@@ -1,14 +1,22 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 type Props = {
   title: string;
   onPress: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export default function Card({title, onPress}: Props) {
+export default function Card({title, style, onPress}: Props) {
   return (
-    <Pressable onPress={onPress} style={styles.card}>
+    <Pressable onPress={onPress} style={[styles.card, style]}>
       {({pressed}) => (
         <>
           {pressed && <View style={styles.dim} />}
@@ -23,14 +31,14 @@ const styles = StyleSheet.create({
   card: {
     justifyContent: 'center',
     alignContent: 'center',
-    alignSelf: 'center',
-    minWidth: 230,
-    minHeight: 130,
-    marginVertical: 100,
+    aspectRatio: '2/1',
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: 200,
+    marginVertical: 20,
     borderColor: 'black',
     borderRadius: 12,
     borderWidth: 2,
-
     overflow: 'hidden',
   },
   cardWord: {

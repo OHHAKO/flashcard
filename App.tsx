@@ -68,7 +68,9 @@ function App(): React.JSX.Element {
           <Text style={styles.highlight}>카드</Text>를 눌러서 단어 뜻을 확인해
           보세요.
         </Section>
-        <Card onPress={onPress} title="hello" />
+        <View style={styles.content}>
+          <Card onPress={onPress} title="hello" style={styles.card} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -80,13 +82,13 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    flex: 1,
+    minHeight: '100%',
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
 
   sectionContainer: {
-    paddingTop: 24,
+    paddingTop: 32,
   },
   sectionTitle: {
     fontSize: 24,
@@ -99,6 +101,16 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: 32,
+  },
+
+  card: {
+    alignSelf: 'center',
   },
 });
 
