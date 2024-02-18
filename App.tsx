@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -13,6 +13,7 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Card from './src/components/Card';
+import {words} from './src/data/words';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -46,6 +47,7 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
 }
 
 function App(): React.JSX.Element {
+  const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -53,7 +55,7 @@ function App(): React.JSX.Element {
   };
 
   const onPress = () => {
-    console.log('click');
+    setFlipped(prev => !prev);
   };
 
   return (
@@ -68,7 +70,7 @@ function App(): React.JSX.Element {
           보세요.
         </Section>
         <View style={styles.content}>
-          <Card onPress={onPress} title="hello" />
+          <Card onPress={onPress} title={flipped ? words.ko : words.en} />
         </View>
       </View>
     </SafeAreaView>
