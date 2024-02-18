@@ -2,12 +2,13 @@ import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
+  StyleProp,
   StyleSheet,
   Text,
   useColorScheme,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -15,12 +16,13 @@ import Card from './src/components/Card';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
+  style?: StyleProp<ViewStyle>;
 }>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+function Section({children, title, style}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
+    <View style={[styles.sectionContainer, style]}>
       <Text
         style={[
           styles.sectionTitle,
@@ -60,29 +62,22 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.scrollView}
-        contentContainerStyle={styles.container}>
-        <Section title="FlashCard">
+      <View style={styles.container}>
+        <Section title="FlashCard" style={{flexGrow: 1}}>
           <Text style={styles.highlight}>카드</Text>를 눌러서 단어 뜻을 확인해
           보세요.
         </Section>
         <View style={styles.content}>
-          <Card onPress={onPress} title="hello" style={styles.card} />
+          <Card onPress={onPress} title="hello" />
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    height: '100%',
-  },
-
   container: {
-    minHeight: '100%',
+    height: '100%',
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
@@ -104,13 +99,8 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingBottom: 32,
-  },
-
-  card: {
-    alignSelf: 'center',
+    flexGrow: 2,
+    alignItems: 'center',
   },
 });
 
