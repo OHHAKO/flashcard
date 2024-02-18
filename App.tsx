@@ -1,38 +1,28 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
+  StyleProp,
   StyleSheet,
   Text,
   useColorScheme,
   View,
+  ViewStyle,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Card from './src/components/Card';
 
 type SectionProps = PropsWithChildren<{
-  title: string;
+  title?: string;
+  style?: StyleProp<ViewStyle>;
 }>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+function Section({children, title, style}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
+    <View style={[styles.sectionContainer, style]}>
       <Text
         style={[
           styles.sectionTitle,
@@ -62,44 +52,38 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const onPress = () => {
+    console.log('click');
+  };
+
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+      <View style={styles.container}>
+        <Section title="FlashCard" style={{flexGrow: 1}}>
+          <Text style={styles.highlight}>카드</Text>를 눌러서 단어 뜻을 확인해
+          보세요.
+        </Section>
+        <View style={styles.content}>
+          <Card onPress={onPress} title="hello" />
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+
   sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+    paddingTop: 32,
   },
   sectionTitle: {
     fontSize: 24,
@@ -112,6 +96,11 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+
+  content: {
+    flexGrow: 2,
+    alignItems: 'center',
   },
 });
 
