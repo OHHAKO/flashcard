@@ -9,14 +9,17 @@ import {
 } from 'react-native';
 
 type Props = {
-  title: string;
-  onPress: () => void;
+  title?: string;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
 export default function Card({title, style, onPress}: Props) {
   return (
-    <Pressable onPress={onPress} style={[styles.card, style]}>
+    <Pressable
+      onPress={onPress}
+      style={[styles.card, style]}
+      disabled={!onPress}>
       {({pressed}) => (
         <>
           {pressed && <View style={styles.dim} />}
@@ -35,7 +38,6 @@ const styles = StyleSheet.create({
     width: '90%',
     maxWidth: 400,
     maxHeight: 200,
-    marginVertical: 20,
     borderColor: 'black',
     borderRadius: 12,
     borderWidth: 2,

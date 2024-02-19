@@ -16,6 +16,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Card from './src/components/Card';
 import {words} from './src/data/words';
 import Button from './src/components/Button';
+import {NestedCard} from './src/components/NestedCard';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -89,10 +90,13 @@ function App(): React.JSX.Element {
           보세요.
         </Section>
         <View style={styles.content}>
-          <Card
-            onPress={onPress}
-            title={flipped ? words[step].ko : words[step].en}
-          />
+          <View>
+            <Card
+              onPress={onPress}
+              title={flipped ? words[step].ko : words[step].en}
+            />
+            <NestedCard count={2} />
+          </View>
 
           <View style={[styles.buttons, flipped && styles.appear]}>
             <Button
@@ -141,9 +145,7 @@ const styles = StyleSheet.create({
   },
 
   buttons: {
-    // display: 'none',
     flexDirection: 'row',
-    // backgroundColor: 'red',
     width: '70%',
     gap: 10,
     opacity: 0,
