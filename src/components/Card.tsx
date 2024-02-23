@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Animated,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -30,14 +31,33 @@ export default function Card({title, style, onPress}: Props) {
   );
 }
 
+type AnimatedProps = {
+  posY: Animated.Value;
+  opacity: Animated.Value;
+  animatedStyle?: ViewStyle;
+} & Props;
+
+export function AnimatedCard(props: AnimatedProps) {
+  return (
+    <Animated.View
+      style={[
+        {
+          transform: [{translateY: props.posY}],
+          opacity: props.opacity,
+        },
+        props.animatedStyle,
+      ]}>
+      <Card {...props} />
+    </Animated.View>
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
     justifyContent: 'center',
     alignContent: 'center',
-    aspectRatio: '2/1.3',
-    width: '90%',
-    maxWidth: 400,
-    maxHeight: 200,
+    width: 320,
+    height: 200,
     borderColor: 'black',
     borderRadius: 12,
     borderWidth: 2,

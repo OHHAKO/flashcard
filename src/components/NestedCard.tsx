@@ -1,25 +1,41 @@
 import React from 'react';
-import {StyleSheet, ViewStyle} from 'react-native';
-import Card from './Card';
+import {Animated, ViewStyle} from 'react-native';
+import Card, {AnimatedCard} from './Card';
 
-const stackGap = 3;
+type Props = {
+  count: number;
+  backCardPosY: Animated.Value;
+  backCardOpacity: Animated.Value;
+};
 
-export function NestedCard({count}: {count: number}): React.JSX.Element[] {
-  const stackedCards = new Array(count).fill(null);
+export function NestedCard({
+  count,
+  backCardPosY,
+  backCardOpacity,
+}: Props): React.JSX.Element[] {
+  const stackedCards = new Array(count)
+    .fill(null)
+    .map((e, index) => <Card key={index} style={styles(index)} />);
 
-  const stackStyle = (index: number): ViewStyle => ({
-    top: -(stackGap * index),
-    left: stackGap * index,
-    zIndex: -index,
-  });
+  const backCard = (
+    <AnimatedCard
+      key={count}
+      animatedStyle={styles(count)}
+      opacity={backCardOpacity}
+      posY={backCardPosY}
+    />
+  );
 
-  return stackedCards.map((e, index) => (
-    <Card key={index} style={[styles.nestedCard, stackStyle(index + 1)]} />
-  ));
+  stackedCards.push(backCard);
+
+  return stackedCards;
 }
 
-const styles = StyleSheet.create({
-  nestedCard: {
-    position: 'absolute',
-  },
+const STACK_GAP = 4;
+
+const styles = (index: number): ViewStyle => ({
+  position: 'absolute',
+  top: -(STACK_GAP * index) - STACK_GAP,
+  left: STACK_GAP * index + STACK_GAP,
+  zIndex: -(index + STACK_GAP),
 });

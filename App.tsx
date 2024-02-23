@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   Alert,
+  Animated,
   SafeAreaView,
   StatusBar,
   StyleProp,
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Card from './src/components/Card';
+import {AnimatedCard} from './src/components/Card';
 import {words} from './src/data/words';
 import Button from './src/components/Button';
 import {NestedCard} from './src/components/NestedCard';
@@ -49,10 +50,16 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
   );
 }
 
+const POS_Y = 40;
+
 function App(): React.JSX.Element {
   const [step, setStep] = useState<number>(0);
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
+
+  const cardPosY = new Animated.Value(0);
+  const frontCardOpacity = new Animated.Value(1);
+  const backCardOpacity = new Animated.Value(0);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -74,6 +81,42 @@ function App(): React.JSX.Element {
     setFlipped(false);
   };
 
+  const onPressIncorrect = () => {
+    Animated.sequence([
+      Animated.timing(cardPosY, {
+        toValue: -POS_Y,
+        useNativeDriver: true,
+      }),
+      Animated.timing(frontCardOpacity, {
+        toValue: 0,
+        delay: 200,
+        useNativeDriver: true,
+        duration: 200,
+      }),
+      Animated.timing(backCardOpacity, {
+        delay: 300,
+        toValue: 1,
+        useNativeDriver: true,
+        duration: 200,
+      }),
+      Animated.timing(cardPosY, {
+        toValue: 0,
+        useNativeDriver: true,
+        duration: 500,
+      }),
+      Animated.timing(backCardOpacity, {
+        toValue: 100,
+        useNativeDriver: true,
+        duration: 200,
+      }),
+    ]).start(({finished}) => {
+      if (finished) {
+        setStep(e => e + 1);
+        setFlipped(false);
+      }
+    });
+  };
+
   const onPress = () => {
     setFlipped(prev => !prev);
   };
@@ -90,12 +133,26 @@ function App(): React.JSX.Element {
           보세요.
         </Section>
         <View style={styles.content}>
-          <View>
-            <Card
+          <View
+            style={[
+              {
+                width: 320,
+                height: 200,
+              },
+            ]}>
+            <AnimatedCard
+              opacity={frontCardOpacity}
+              posY={cardPosY}
               onPress={onPress}
               title={flipped ? words[step].ko : words[step].en}
+              animatedStyle={{position: 'absolute', left: 0}}
             />
-            <NestedCard count={2} />
+
+            <NestedCard
+              count={2}
+              backCardPosY={cardPosY}
+              backCardOpacity={backCardOpacity}
+            />
           </View>
 
           <View style={[styles.buttons, flipped && styles.appear]}>
@@ -107,7 +164,7 @@ function App(): React.JSX.Element {
             <Button
               title="못외웠음"
               style={{backgroundColor: 'indianred'}}
-              onPress={() => console.log('틀렸어요 click')}
+              onPress={onPressIncorrect}
             />
           </View>
         </View>
@@ -145,6 +202,7 @@ const styles = StyleSheet.create({
   },
 
   buttons: {
+    marginTop: 16,
     flexDirection: 'row',
     width: '70%',
     gap: 10,
