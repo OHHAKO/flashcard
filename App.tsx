@@ -76,9 +76,16 @@ function App(): React.JSX.Element {
       return;
     }
 
-    setStep(e => e + 1);
-
-    setFlipped(false);
+    // 사라지기
+    Animated.timing(frontCardOpacity, {
+      toValue: 0,
+      delay: 300,
+      useNativeDriver: true,
+      duration: 800,
+    }).start(() => {
+      setStep(e => e + 1);
+      setFlipped(false);
+    });
   };
 
   const onPressIncorrect = () => {
