@@ -135,10 +135,11 @@ function App(): React.JSX.Element {
               },
             ]}>
             <AnimatedCard
+              word={deck.peek()}
+              flipped={flipped}
               opacity={frontCardOpacity}
               posY={cardPosY}
               onPress={onPress}
-              title={flipped ? deck.peek().ko : deck.peek().en}
               animatedStyle={{position: 'absolute', left: 0}}
             />
 

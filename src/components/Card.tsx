@@ -8,14 +8,16 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import {Word} from '../data/words';
 
 type Props = {
-  title?: string;
-  onPress?: () => void;
+  word?: Word;
+  flipped: boolean;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 };
 
-export default function Card({title, style, onPress}: Props) {
+export default function Card({word, style, flipped, onPress}: Props) {
   return (
     <Pressable
       onPress={onPress}
@@ -24,7 +26,7 @@ export default function Card({title, style, onPress}: Props) {
       {({pressed}) => (
         <>
           {pressed && <View style={styles.dim} />}
-          <Text style={styles.cardWord}>{title}</Text>
+          <Text style={styles.cardWord}>{flipped ? word?.ko : word?.en}</Text>
         </>
       )}
     </Pressable>

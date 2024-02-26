@@ -15,7 +15,9 @@ export function NestedCard({
 }: Props): React.JSX.Element[] {
   const stackedCards = new Array(count)
     .fill(null)
-    .map((e, index) => <Card key={index} style={styles(index)} />);
+    .map((e, index) => (
+      <Card key={index} style={styles(index)} flipped={false} />
+    ));
 
   const backCard = (
     <AnimatedCard
@@ -23,6 +25,7 @@ export function NestedCard({
       animatedStyle={styles(count)}
       opacity={backCardOpacity}
       posY={backCardPosY}
+      flipped={false}
     />
   );
 
