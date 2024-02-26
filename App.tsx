@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
-  Alert,
   Animated,
   SafeAreaView,
   StatusBar,
@@ -18,6 +17,7 @@ import {AnimatedCard} from './src/components/Card';
 import {words} from './src/data/words';
 import Button from './src/components/Button';
 import {NestedCard} from './src/components/NestedCard';
+import {Deck} from './src/deck';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -53,7 +53,7 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
 const POS_Y = 40;
 
 function App(): React.JSX.Element {
-  const [step, setStep] = useState<number>(0);
+  const [deck, setDeck] = useState<Deck>(Deck.fromWords(words));
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -65,63 +65,50 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const onPressCorrect = () => {
-    const isLast = words.length === step + 1;
-    if (isLast) {
-      Alert.alert(
-        '모두 외웠습니다!\n더 외울 카드가 없어요. 처음으로 돌아갑니다.',
-      );
-      setStep(0);
-      setFlipped(false);
-      return;
-    }
+  const onNext = (correct: boolean) => {
+    deck.update(correct, Date.now());
+    setDeck(deck);
 
     // 사라지기
-    Animated.timing(frontCardOpacity, {
-      toValue: 0,
-      delay: 300,
-      useNativeDriver: true,
-      duration: 800,
-    }).start(() => {
-      setStep(e => e + 1);
-      setFlipped(false);
-    });
-  };
-
-  const onPressIncorrect = () => {
-    Animated.sequence([
-      Animated.timing(cardPosY, {
-        toValue: -POS_Y,
-        useNativeDriver: true,
-      }),
+    if (correct) {
       Animated.timing(frontCardOpacity, {
         toValue: 0,
-        delay: 200,
-        useNativeDriver: true,
-        duration: 200,
-      }),
-      Animated.timing(backCardOpacity, {
         delay: 300,
-        toValue: 1,
         useNativeDriver: true,
-        duration: 200,
-      }),
-      Animated.timing(cardPosY, {
-        toValue: 0,
-        useNativeDriver: true,
-        duration: 500,
-      }),
-      Animated.timing(backCardOpacity, {
-        toValue: 100,
-        useNativeDriver: true,
-        duration: 200,
-      }),
-    ]).start(({finished}) => {
-      if (finished) {
-        setStep(e => e + 1);
+        duration: 800,
+      }).start(() => {
         setFlipped(false);
-      }
-    });
+      });
+    } else {
+      Animated.sequence([
+        Animated.timing(cardPosY, {
+          toValue: -POS_Y,
+          useNativeDriver: true,
+        }),
+        Animated.timing(frontCardOpacity, {
+          toValue: 0,
+          delay: 200,
+          useNativeDriver: true,
+          duration: 200,
+        }),
+        Animated.timing(backCardOpacity, {
+          delay: 300,
+          toValue: 1,
+          useNativeDriver: true,
+          duration: 200,
+        }),
+        Animated.timing(cardPosY, {
+          toValue: 0,
+          useNativeDriver: true,
+          duration: 500,
+        }),
+        Animated.timing(backCardOpacity, {
+          toValue: 100,
+          useNativeDriver: true,
+          duration: 200,
+        }),
+      ]).start();
+    }
   };
 
   const onPress = () => {
@@ -151,7 +138,7 @@ function App(): React.JSX.Element {
               opacity={frontCardOpacity}
               posY={cardPosY}
               onPress={onPress}
-              title={flipped ? words[step].ko : words[step].en}
+              title={flipped ? deck.peek().ko : deck.peek().en}
               animatedStyle={{position: 'absolute', left: 0}}
             />
 
@@ -166,12 +153,12 @@ function App(): React.JSX.Element {
             <Button
               title="외웠음"
               style={{backgroundColor: 'forestgreen'}}
-              onPress={onPressCorrect}
+              onPress={() => onNext(true)}
             />
             <Button
               title="못외웠음"
               style={{backgroundColor: 'indianred'}}
-              onPress={onPressIncorrect}
+              onPress={() => onNext(false)}
             />
           </View>
         </View>

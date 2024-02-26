@@ -6218,6 +6218,11 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+ts-heapq@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/ts-heapq/-/ts-heapq-1.0.6.tgz#58ff34fd7b4d19ebc3c0787c5d198c16ed93e11b"
+  integrity sha512-vLvxJX/F9I/60wQCHgNLJKVkFGpB13Ehyrpu0GZYFwyX1N/dmVanAoRorONSD/kJ63i6L3jY3LZZgKZF5RU22g==
+
 tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
