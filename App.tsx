@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
-  Alert,
   SafeAreaView,
   StatusBar,
   StyleProp,
@@ -16,6 +15,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Card from './src/components/Card';
 import {words} from './src/data/words';
 import Button from './src/components/Button';
+import {Deck} from './src/deck';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -49,7 +49,7 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
 }
 
 function App(): React.JSX.Element {
-  const [step, setStep] = useState<number>(0);
+  const [deck, setDeck] = useState<Deck>(Deck.fromWords(words));
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -57,19 +57,9 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const onPressCorrect = () => {
-    const isLast = words.length === step + 1;
-    if (isLast) {
-      Alert.alert(
-        '모두 외웠습니다!\n더 외울 카드가 없어요. 처음으로 돌아갑니다.',
-      );
-      setStep(0);
-      setFlipped(false);
-      return;
-    }
-
-    setStep(e => e + 1);
-
+  const onNext = (correct: boolean) => {
+    deck.update(correct, Date.now());
+    setDeck(deck);
     setFlipped(false);
   };
 
@@ -91,19 +81,19 @@ function App(): React.JSX.Element {
         <View style={styles.content}>
           <Card
             onPress={onPress}
-            title={flipped ? words[step].ko : words[step].en}
+            title={flipped ? deck.peek().ko : deck.peek().en}
           />
 
           <View style={[styles.buttons, flipped && styles.appear]}>
             <Button
               title="외웠음"
               style={{backgroundColor: 'forestgreen'}}
-              onPress={onPressCorrect}
+              onPress={() => onNext(true)}
             />
             <Button
               title="못외웠음"
               style={{backgroundColor: 'indianred'}}
-              onPress={() => console.log('틀렸어요 click')}
+              onPress={() => onNext(false)}
             />
           </View>
         </View>
