@@ -137,16 +137,21 @@ function App(): React.JSX.Element {
             <AnimatedCard
               word={deck.peek()}
               flipped={flipped}
-              opacity={frontCardOpacity}
-              posY={cardPosY}
               onPress={onPress}
-              animatedStyle={{position: 'absolute', left: 0}}
+              animatedStyle={{
+                position: 'absolute',
+                left: 0,
+                transform: [{translateY: cardPosY}],
+                opacity: frontCardOpacity,
+              }}
             />
 
             <NestedCard
               count={2}
-              backCardPosY={cardPosY}
-              backCardOpacity={backCardOpacity}
+              lastCardAnimatedStyle={{
+                transform: [{translateY: cardPosY}],
+                opacity: backCardOpacity,
+              }}
             />
           </View>
 

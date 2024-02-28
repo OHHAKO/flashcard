@@ -34,21 +34,12 @@ export default function Card({word, style, flipped, onPress}: Props) {
 }
 
 type AnimatedProps = {
-  posY: Animated.Value;
-  opacity: Animated.Value;
-  animatedStyle?: ViewStyle;
+  animatedStyle?: Animated.WithAnimatedObject<ViewStyle>;
 } & Props;
 
 export function AnimatedCard(props: AnimatedProps) {
   return (
-    <Animated.View
-      style={[
-        {
-          transform: [{translateY: props.posY}],
-          opacity: props.opacity,
-        },
-        props.animatedStyle,
-      ]}>
+    <Animated.View style={[props.animatedStyle]}>
       <Card {...props} />
     </Animated.View>
   );
