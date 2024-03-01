@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
-  Animated,
   SafeAreaView,
   StatusBar,
   StyleProp,
@@ -18,6 +17,7 @@ import {words} from './src/data/words';
 import Button from './src/components/Button';
 import {NestedCard} from './src/components/NestedCard';
 import {Deck} from './src/deck';
+import useCardAnimation from './src/hooks/useCardAnimation';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -50,16 +50,13 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
   );
 }
 
-const POS_Y = 40;
-
 function App(): React.JSX.Element {
   const [deck, setDeck] = useState<Deck>(Deck.fromWords(words));
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const cardPosY = new Animated.Value(0);
-  const frontCardOpacity = new Animated.Value(1);
-  const backCardOpacity = new Animated.Value(0);
+  const {frontCard, backCard, animateFrontCard, animateBothEndsCard} =
+    useCardAnimation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -71,43 +68,9 @@ function App(): React.JSX.Element {
 
     // 사라지기
     if (correct) {
-      Animated.timing(frontCardOpacity, {
-        toValue: 0,
-        delay: 300,
-        useNativeDriver: true,
-        duration: 800,
-      }).start(() => {
-        setFlipped(false);
-      });
+      animateFrontCard(() => setFlipped(false));
     } else {
-      Animated.sequence([
-        Animated.timing(cardPosY, {
-          toValue: -POS_Y,
-          useNativeDriver: true,
-        }),
-        Animated.timing(frontCardOpacity, {
-          toValue: 0,
-          delay: 200,
-          useNativeDriver: true,
-          duration: 200,
-        }),
-        Animated.timing(backCardOpacity, {
-          delay: 300,
-          toValue: 1,
-          useNativeDriver: true,
-          duration: 200,
-        }),
-        Animated.timing(cardPosY, {
-          toValue: 0,
-          useNativeDriver: true,
-          duration: 500,
-        }),
-        Animated.timing(backCardOpacity, {
-          toValue: 100,
-          useNativeDriver: true,
-          duration: 200,
-        }),
-      ]).start();
+      animateBothEndsCard(() => setFlipped(false));
     }
   };
 
@@ -137,16 +100,21 @@ function App(): React.JSX.Element {
             <AnimatedCard
               word={deck.peek()}
               flipped={flipped}
-              opacity={frontCardOpacity}
-              posY={cardPosY}
               onPress={onPress}
-              animatedStyle={{position: 'absolute', left: 0}}
+              animatedStyle={{
+                position: 'absolute',
+                left: 0,
+                transform: [{translateY: frontCard.posY}],
+                opacity: frontCard.opacity,
+              }}
             />
 
             <NestedCard
               count={2}
-              backCardPosY={cardPosY}
-              backCardOpacity={backCardOpacity}
+              lastCardAnimatedStyle={{
+                transform: [{translateY: backCard.posY}],
+                opacity: backCard.opacity,
+              }}
             />
           </View>
 
