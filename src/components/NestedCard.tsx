@@ -4,25 +4,24 @@ import Card, {AnimatedCard} from './Card';
 
 type Props = {
   count: number;
-  backCardPosY: Animated.Value;
-  backCardOpacity: Animated.Value;
+  lastCardAnimatedStyle: Animated.WithAnimatedObject<ViewStyle>;
 };
 
 export function NestedCard({
   count,
-  backCardPosY,
-  backCardOpacity,
+  lastCardAnimatedStyle,
 }: Props): React.JSX.Element[] {
   const stackedCards = new Array(count)
     .fill(null)
-    .map((e, index) => <Card key={index} style={styles(index)} />);
+    .map((e, index) => (
+      <Card key={index} style={styles(index)} flipped={false} />
+    ));
 
   const backCard = (
     <AnimatedCard
       key={count}
-      animatedStyle={styles(count)}
-      opacity={backCardOpacity}
-      posY={backCardPosY}
+      animatedStyle={{...styles(count), ...lastCardAnimatedStyle}}
+      flipped={false}
     />
   );
 
