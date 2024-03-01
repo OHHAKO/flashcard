@@ -12,10 +12,12 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Card from './src/components/Card';
+import {AnimatedCard} from './src/components/Card';
 import {words} from './src/data/words';
 import Button from './src/components/Button';
+import {NestedCard} from './src/components/NestedCard';
 import {Deck} from './src/deck';
+import useCardAnimation from './src/hooks/useCardAnimation';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -53,6 +55,9 @@ function App(): React.JSX.Element {
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
+  const {frontCard, backCard, animateFrontCard, animateBothEndsCard} =
+    useCardAnimation();
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -60,7 +65,13 @@ function App(): React.JSX.Element {
   const onNext = (correct: boolean) => {
     deck.update(correct, Date.now());
     setDeck(deck);
-    setFlipped(false);
+
+    // 사라지기
+    if (correct) {
+      animateFrontCard(() => setFlipped(false));
+    } else {
+      animateBothEndsCard(() => setFlipped(false));
+    }
   };
 
   const onPress = () => {
@@ -79,10 +90,33 @@ function App(): React.JSX.Element {
           보세요.
         </Section>
         <View style={styles.content}>
-          <Card
-            onPress={onPress}
-            title={flipped ? deck.peek().ko : deck.peek().en}
-          />
+          <View
+            style={[
+              {
+                width: 320,
+                height: 200,
+              },
+            ]}>
+            <AnimatedCard
+              word={deck.peek()}
+              flipped={flipped}
+              onPress={onPress}
+              animatedStyle={{
+                position: 'absolute',
+                left: 0,
+                transform: [{translateY: frontCard.posY}],
+                opacity: frontCard.opacity,
+              }}
+            />
+
+            <NestedCard
+              count={2}
+              lastCardAnimatedStyle={{
+                transform: [{translateY: backCard.posY}],
+                opacity: backCard.opacity,
+              }}
+            />
+          </View>
 
           <View style={[styles.buttons, flipped && styles.appear]}>
             <Button
@@ -131,9 +165,8 @@ const styles = StyleSheet.create({
   },
 
   buttons: {
-    // display: 'none',
+    marginTop: 16,
     flexDirection: 'row',
-    // backgroundColor: 'red',
     width: '70%',
     gap: 10,
     opacity: 0,
