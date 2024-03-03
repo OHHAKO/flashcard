@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -18,6 +18,7 @@ import Button from './src/components/Button';
 import {NestedCard} from './src/components/NestedCard';
 import {Deck} from './src/deck';
 import useCardAnimation from './src/hooks/useCardAnimation';
+import {STORAGE_KEY, storage} from './src/storage';
 
 type SectionProps = PropsWithChildren<{
   title?: string;
@@ -51,7 +52,7 @@ function Section({children, title, style}: SectionProps): React.JSX.Element {
 }
 
 function App(): React.JSX.Element {
-  const [deck, setDeck] = useState<Deck>(Deck.fromWords(words));
+  const [deck, setDeck] = useState<Deck | undefined>();
   const [flipped, setFlipped] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -63,10 +64,14 @@ function App(): React.JSX.Element {
   };
 
   const onNext = (correct: boolean) => {
+    if (!deck) {
+      return;
+    }
+
     deck.update(correct, Date.now());
     setDeck(deck);
+    storage.set(STORAGE_KEY.deck, deck?.saveJson());
 
-    // 사라지기
     if (correct) {
       animateFrontCard(() => setFlipped(false));
     } else {
@@ -77,6 +82,11 @@ function App(): React.JSX.Element {
   const onPress = () => {
     setFlipped(prev => !prev);
   };
+
+  useEffect(() => {
+    const jsonItem = storage.getString(STORAGE_KEY.deck);
+    setDeck(jsonItem ? Deck.fromJson(jsonItem) : Deck.fromWords(words));
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -97,17 +107,21 @@ function App(): React.JSX.Element {
                 height: 200,
               },
             ]}>
-            <AnimatedCard
-              word={deck.peek()}
-              flipped={flipped}
-              onPress={onPress}
-              animatedStyle={{
-                position: 'absolute',
-                left: 0,
-                transform: [{translateY: frontCard.posY}],
-                opacity: frontCard.opacity,
-              }}
-            />
+            {deck ? (
+              <AnimatedCard
+                word={deck.peek()}
+                flipped={flipped}
+                onPress={onPress}
+                animatedStyle={{
+                  position: 'absolute',
+                  left: 0,
+                  transform: [{translateY: frontCard.posY}],
+                  opacity: frontCard.opacity,
+                }}
+              />
+            ) : (
+              <Text>...loading</Text>
+            )}
 
             <NestedCard
               count={2}
