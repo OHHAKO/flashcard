@@ -90,13 +90,7 @@ function App(): React.JSX.Element {
           보세요.
         </Section>
         <View style={styles.content}>
-          <View
-            style={[
-              {
-                width: 320,
-                height: 200,
-              },
-            ]}>
+          <View style={styles.cardSection}>
             <AnimatedCard
               word={deck.peek()}
               flipped={flipped}
@@ -118,23 +112,29 @@ function App(): React.JSX.Element {
             />
           </View>
 
-          <View style={[styles.buttons, flipped && styles.appear]}>
-            <Button
-              title="외웠음"
-              style={{backgroundColor: 'forestgreen'}}
-              onPress={() => onNext(true)}
-            />
-            <Button
-              title="못외웠음"
-              style={{backgroundColor: 'indianred'}}
-              onPress={() => onNext(false)}
-            />
-          </View>
+          {flipped ? (
+            <View style={styles.buttonSection}>
+              <View style={styles.buttons}>
+                <Button
+                  title="외웠음"
+                  style={{backgroundColor: 'forestgreen'}}
+                  onPress={() => onNext(true)}
+                />
+                <Button
+                  title="못외웠음"
+                  style={{backgroundColor: 'indianred'}}
+                  onPress={() => onNext(false)}
+                />
+              </View>
+            </View>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>
   );
 }
+
+const BOTTOM = 12;
 
 const styles = StyleSheet.create({
   container: {
@@ -160,20 +160,27 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    flexGrow: 2,
+    position: 'relative',
+    flexGrow: 4,
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 
-  buttons: {
-    marginTop: 16,
-    flexDirection: 'row',
-    width: '70%',
-    gap: 10,
-    opacity: 0,
+  cardSection: {
+    width: 320,
+    height: 400,
+    bottom: BOTTOM + 66,
   },
 
-  appear: {
-    opacity: 1,
+  buttonSection: {
+    position: 'absolute',
+    bottom: BOTTOM,
+    width: '100%',
+  },
+
+  buttons: {
+    flexDirection: 'row',
+    gap: 10,
   },
 });
 
