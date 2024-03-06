@@ -46,7 +46,7 @@ export function Section({
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    paddingTop: 32,
+    paddingTop: 16,
   },
   sectionTitle: {
     fontSize: 24,
@@ -56,5 +56,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 18,
     fontWeight: '400',
+    lineHeight: 22,
   },
 });

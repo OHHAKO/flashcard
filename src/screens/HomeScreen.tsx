@@ -8,6 +8,7 @@ import {STORAGE_KEY, storage} from '../storage';
 import {Deck} from '../deck';
 import {words} from '../data/words';
 import {Section} from '../components/Section';
+import ScreenContainer from '../components/ScreenContainer';
 
 export default function HomeScreen() {
   const [deck, setDeck] = useState<Deck | undefined>();
@@ -41,52 +42,54 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Section title="FlashCard" style={{flexGrow: 1}}>
-        <Text style={styles.highlight}>카드</Text>를 눌러서 단어 뜻을 확인해
-        보세요.
-      </Section>
-      <View style={styles.content}>
-        <View style={styles.cardSection}>
-          <AnimatedCard
-            word={deck?.peek()}
-            flipped={flipped}
-            onPress={onPress}
-            animatedStyle={{
-              position: 'absolute',
-              left: 0,
-              transform: [{translateY: frontCard.posY}],
-              opacity: frontCard.opacity,
-            }}
-          />
+    <ScreenContainer>
+      <View style={styles.container}>
+        <Section title="FlashCard" style={{flexGrow: 1}}>
+          <Text style={styles.highlight}>카드</Text>를 눌러서 단어 뜻을 확인해
+          보세요.
+        </Section>
+        <View style={styles.content}>
+          <View style={styles.cardSection}>
+            <AnimatedCard
+              word={deck?.peek()}
+              flipped={flipped}
+              onPress={onPress}
+              animatedStyle={{
+                position: 'absolute',
+                left: 0,
+                transform: [{translateY: frontCard.posY}],
+                opacity: frontCard.opacity,
+              }}
+            />
 
-          <NestedCard
-            count={2}
-            lastCardAnimatedStyle={{
-              transform: [{translateY: backCard.posY}],
-              opacity: backCard.opacity,
-            }}
-          />
-        </View>
-
-        {flipped ? (
-          <View style={styles.buttonSection}>
-            <View style={styles.buttons}>
-              <Button
-                title="외웠음"
-                style={{backgroundColor: 'forestgreen'}}
-                onPress={() => onNext(true)}
-              />
-              <Button
-                title="못외웠음"
-                style={{backgroundColor: 'indianred'}}
-                onPress={() => onNext(false)}
-              />
-            </View>
+            <NestedCard
+              count={2}
+              lastCardAnimatedStyle={{
+                transform: [{translateY: backCard.posY}],
+                opacity: backCard.opacity,
+              }}
+            />
           </View>
-        ) : null}
+
+          {flipped ? (
+            <View style={styles.buttonSection}>
+              <View style={styles.buttons}>
+                <Button
+                  title="외웠음"
+                  style={{backgroundColor: 'forestgreen'}}
+                  onPress={() => onNext(true)}
+                />
+                <Button
+                  title="못외웠음"
+                  style={{backgroundColor: 'indianred'}}
+                  onPress={() => onNext(false)}
+                />
+              </View>
+            </View>
+          ) : null}
+        </View>
       </View>
-    </View>
+    </ScreenContainer>
   );
 }
 
