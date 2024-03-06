@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     width: 320,
-    height: 200,
+    height: 400,
     borderColor: 'black',
     borderRadius: 12,
     borderWidth: 2,

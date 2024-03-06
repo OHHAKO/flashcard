@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   button: {
     flexGrow: 1,
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 18,
   },
   buttonText: {
     fontSize: 16,
