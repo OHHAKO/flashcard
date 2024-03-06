@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "18.2.0",
     "react-native": "0.73.4",
+    "react-native-mmkv": "^2.12.1",
     "ts-heapq": "^1.0.6"
   },
   "devDependencies": {
